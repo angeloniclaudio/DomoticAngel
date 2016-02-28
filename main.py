@@ -34,7 +34,7 @@ class DomoticApp(App):
     show_sourcecode = BooleanProperty(False)
     sourcecode = StringProperty()
     screen_names = ListProperty([])
-    hierarchy = ListProperty([])
+	hierarchy = ListProperty([])
 
 	def build(self):
 		self.title = 'hello world'
@@ -94,8 +94,6 @@ class DomoticApp(App):
         screen = Builder.load_file(self.available_screens[index].lower())
         self.screens[index] = screen
         return screen
-
-
 
 	def _update_clock(self, dt):
 		self.time = time()
