@@ -36,7 +36,7 @@ class DomoticApp(App):
     screen_names = ListProperty([])
     hierarchy = ListProperty([])
 
-     def build(self):
+    def build(self):
         self.title = 'hello world'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
@@ -97,7 +97,7 @@ class DomoticApp(App):
 
 
 
-            def _update_clock(self, dt):
+    def _update_clock(self, dt):
         self.time = time()
 
 if __name__ == '__main__':
