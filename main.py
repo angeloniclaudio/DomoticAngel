@@ -23,7 +23,7 @@ class DomoticScreen(Screen):
     def add_widget(self, *args):
         if 'content' in self.ids:
             return self.ids.content.add_widget(*args)
-        return super(ShowcaseScreen, self).add_widget(*args)
+        return super(DomoticScreen, self).add_widget(*args)
 
 
 class DomoticApp(App):
