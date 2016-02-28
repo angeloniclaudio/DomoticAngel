@@ -10,13 +10,14 @@ DomoticXScreen:
 
 
         Button:
-            StackLayout:
+            GridLayout:
+                rows: 2
                 pos: self.parent.pos
                 size: self.parent.size
-                orientation: 'lr-tb'
                 Image:
                     source: 'data/icons/iconset/light.png'
                     size_hint_x: None
+                    height: self.parent.height
                 Label:
                     size_hint_x: None
                     text: "Lights"
