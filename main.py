@@ -8,13 +8,13 @@ This is the main file of the Domoticangel application used to control the home a
 
 from time import time
 from kivy.app import App
+from os.path import dirname, join
+from kivy.lang import Builder
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty,\
     ListProperty
 from kivy.clock import Clock
 from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen
-from os.path import dirname, join
-from kivy.lang import Builder
 
 
 class DomoticScreen(Screen):
@@ -36,8 +36,8 @@ class DomoticApp(App):
     screen_names = ListProperty([])
     hierarchy = ListProperty([])
 
-    def build(self):
-        self.title = 'hello world'
+	def build(self):
+		self.title = 'hello world'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
         self.available_screens = sorted([
@@ -55,7 +55,7 @@ class DomoticApp(App):
         pass
 
     def on_current_title(self, instance, value):
-        self.root.ids.spnr.text = value
+		elf.root.ids.spnr.text = value
 
 	def go_previous_screen(self):
 		self.index = (self.index - 1) % len(self.available_screens)
