@@ -50,8 +50,6 @@ class DomoticXApp(App):
     index = NumericProperty(-1)
     current_title = StringProperty()
     time = NumericProperty(0)
-    show_sourcecode = BooleanProperty(False)
-    sourcecode = StringProperty()
     screen_names = ListProperty([])
     hierarchy = ListProperty([])
 
@@ -86,7 +84,6 @@ class DomoticXApp(App):
         sm = self.root.ids.sm
         sm.switch_to(screen, direction='right')
         self.current_title = screen.name
-        self.update_sourcecode()
 
     def go_next_screen(self):
         self.index = (self.index + 1) % len(self.available_screens)
@@ -94,12 +91,10 @@ class DomoticXApp(App):
         sm = self.root.ids.sm
         sm.switch_to(screen, direction='left')
         self.current_title = screen.name
-        self.update_sourcecode()
 
     def go_screen(self, idx):
         self.index = idx
         self.root.ids.sm.switch_to(self.load_screen(idx), direction='left')
-        self.update_sourcecode()
 
     def go_hierarchy_previous(self):
         ahr = self.hierarchy
