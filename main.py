@@ -118,29 +118,6 @@ class DomoticXApp(App):
         self.screens[index] = screen
         return screen
 
-    def read_sourcecode(self):
-        fn = self.available_screens[self.index].lower()
-        with open(fn) as fd:
-            return fd.read()
-
-    def toggle_source_code(self):
-        self.show_sourcecode = not self.show_sourcecode
-        if self.show_sourcecode:
-            height = self.root.height * .3
-        else:
-            height = 0
-
-        Animation(height=height, d=.3, t='out_quart').start(
-                self.root.ids.sv)
-
-        self.update_sourcecode()
-
-    def update_sourcecode(self):
-        if not self.show_sourcecode:
-            self.root.ids.sourcecode.focus = False
-            return
-        self.root.ids.sourcecode.text = self.read_sourcecode()
-        self.root.ids.sv.scroll_y = 1
 
     def showcase_floatlayout(self, layout):
 
