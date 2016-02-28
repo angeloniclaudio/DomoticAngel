@@ -58,7 +58,7 @@ class DomoticXApp(App):
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
         self.available_screens = sorted([
-            'Lights', 'Temperatures', 'Scenarios'])
+            'Light', 'Temperatures', 'Scenarios'])
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
