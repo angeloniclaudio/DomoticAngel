@@ -1,5 +1,4 @@
 #:kivy 1.8.0
-#:import KivyLexer kivy.extras.highlight.KivyLexer
 #:import Factory kivy.factory.Factory
 
 <ActionSpinnerOptions@SpinnerOption>
@@ -52,7 +51,7 @@ BoxLayout:
             ActionPrevious:
                 with_previous: (False if sm.current_screen.name == 'button' else True) if sm.current_screen else False
                 title: 'DomoticX' + ('' if not app.current_title else ' - {}'.format(app.current_title))
-                on_release: app.go_hierarchy_previous()
+                app_icon: 'data/icons/iconset/home.png'
 
             ActionSpinner:
                 id: spnr
