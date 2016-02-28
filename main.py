@@ -100,6 +100,8 @@ class DomoticXApp(App):
         self.screens[index] = screen
         return screen
 
+    def _update_clock(self, dt):
+        self.time = time()
 
 if __name__ == '__main__':
     DomoticXApp().run()
