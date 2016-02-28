@@ -58,27 +58,27 @@ class DomoticApp(App):
         self.root.ids.spnr.text = value
 
 	def go_previous_screen(self):
-        self.index = (self.index - 1) % len(self.available_screens)
-        screen = self.load_screen(self.index)
+		self.index = (self.index - 1) % len(self.available_screens)
+		screen = self.load_screen(self.index)
         sm = self.root.ids.sm
         sm.switch_to(screen, direction='right')
         self.current_title = screen.name
         self.update_sourcecode()
 
-    def go_next_screen(self):
-        self.index = (self.index + 1) % len(self.available_screens)
+	def go_next_screen(self):
+		self.index = (self.index + 1) % len(self.available_screens)
         screen = self.load_screen(self.index)
         sm = self.root.ids.sm
         sm.switch_to(screen, direction='left')
         self.current_title = screen.name
         self.update_sourcecode()
 
-    def go_screen(self, idx):
-        self.index = idx
-        self.root.ids.sm.switch_to(self.load_screen(idx), direction='left')
-        self.update_sourcecode()
+	def go_screen(self, idx):
+		self.index = idx
+		elf.root.ids.sm.switch_to(self.load_screen(idx), direction='left')
+		self.update_sourcecode()
 
-    def go_hierarchy_previous(self):
+	def go_hierarchy_previous(self):
         ahr = self.hierarchy
         if len(ahr) == 1:
             return
@@ -88,7 +88,7 @@ class DomoticApp(App):
             idx = ahr.pop()
             self.go_screen(idx)
 
-    def load_screen(self, index):
+	def load_screen(self, index):
         if index in self.screens:
             return self.screens[index]
         screen = Builder.load_file(self.available_screens[index].lower())
@@ -97,8 +97,8 @@ class DomoticApp(App):
 
 
 
-    def _update_clock(self, dt):
-        self.time = time()
+	def _update_clock(self, dt):
+		self.time = time()
 
 if __name__ == '__main__':
     DomoticApp().run()
