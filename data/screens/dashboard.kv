@@ -11,12 +11,19 @@ DomoticXScreen:
 
 
         Button:
-            size_hint_y: None
-            Label: 'Lights'
-            Image:
-                source: 'data/icons/iconset/light.png'
-                center_x: self.parent.center_x
-                center_y: self.parent.center_y
+            StackLayout:
+                pos: self.parent.pos
+                size: self.parent.size
+                orientation: 'lr-tb'
+                Image:
+                    source: 'data/icons/iconset/light.png'
+                    size_hint_x: None
+                    width: 74
+                Label:
+                    size_hint_x: None
+                    text: "Lights"
+
+
 
         Button:
             size_hint_y: None
