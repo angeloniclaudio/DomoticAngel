@@ -1,47 +1,108 @@
+'''
+DomoticAngel
+=========================
+
+This is the main file of the Domoticangel application used to control the home autmation
+
+'''
+
+from time import time
 from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty, ReferenceListProperty,\
-    ObjectProperty
-from kivy.vector import Vector
+from kivy.properties import NumericProperty, StringProperty, BooleanProperty,\
+    ListProperty
 from kivy.clock import Clock
-from random import randint
+from kivy.animation import Animation
+from kivy.uix.screenmanager import Screen
+from os.path import dirname, join
+from kivy.lang import Builder
 
 
-class PongBall(Widget):
-    velocity_x = NumericProperty(0)
-    velocity_y = NumericProperty(0)
-    velocity = ReferenceListProperty(velocity_x, velocity_y)
+class DomoticScreen(Screen):
+    fullscreen = BooleanProperty(False)
 
-    def move(self):
-        self.pos = Vector(*self.velocity) + self.pos
-
-
-class PongGame(Widget):
-    ball = ObjectProperty(None)
-
-    def serve_ball(self):
-        self.ball.center = self.center
-        self.ball.velocity = Vector(4, 0).rotate(randint(0, 360))
-
-    def update(self, dt):
-        self.ball.move()
-
-        #bounce off top and bottom
-        if (self.ball.y < 0) or (self.ball.top > self.height):
-            self.ball.velocity_y *= -1
-
-        #bounce off left and right
-        if (self.ball.x < 0) or (self.ball.right > self.width):
-            self.ball.velocity_x *= -1
+    def add_widget(self, *args):
+        if 'content' in self.ids:
+            return self.ids.content.add_widget(*args)
+        return super(ShowcaseScreen, self).add_widget(*args)
 
 
-class PongApp(App):
-    def build(self):
-        game = PongGame()
-        game.serve_ball()
-        Clock.schedule_interval(game.update, 1.0 / 60.0)
-        return game
+class DomoticApp(App):
 
+    index = NumericProperty(-1)
+    current_title = StringProperty()
+    time = NumericProperty(0)
+    show_sourcecode = BooleanProperty(False)
+    sourcecode = StringProperty()
+    screen_names = ListProperty([])
+    hierarchy = ListProperty([])
+
+     def build(self):
+        self.title = 'hello world'
+        Clock.schedule_interval(self._update_clock, 1 / 60.)
+        self.screens = {}
+        self.available_screens = sorted([
+            'Light', 'Temperature', 'Weather', 'Calendar'])
+        self.screen_names = self.available_screens
+        curdir = dirname(__file__)
+        self.available_screens = [join(curdir, 'data', 'screens',
+            '{}.kv'.format(fn)) for fn in self.available_screens]
+        self.go_next_screen()
+
+    def on_pause(self):
+        return True
+
+    def on_resume(self):
+        pass
+
+    def on_current_title(self, instance, value):
+        self.root.ids.spnr.text = value
+
+	def go_previous_screen(self):
+        self.index = (self.index - 1) % len(self.available_screens)
+        screen = self.load_screen(self.index)
+        sm = self.root.ids.sm
+        sm.switch_to(screen, direction='right')
+        self.current_title = screen.name
+        self.update_sourcecode()
+
+    def go_next_screen(self):
+        self.index = (self.index + 1) % len(self.available_screens)
+        screen = self.load_screen(self.index)
+        sm = self.root.ids.sm
+        sm.switch_to(screen, direction='left')
+        self.current_title = screen.name
+        self.update_sourcecode()
+
+    def go_screen(self, idx):
+        self.index = idx
+        self.root.ids.sm.switch_to(self.load_screen(idx), direction='left')
+        self.update_sourcecode()
+
+    def go_hierarchy_previous(self):
+        ahr = self.hierarchy
+        if len(ahr) == 1:
+            return
+        if ahr:
+            ahr.pop()
+        if ahr:
+            idx = ahr.pop()
+            self.go_screen(idx)
+
+    def load_screen(self, index):
+        if index in self.screens:
+            return self.screens[index]
+        screen = Builder.load_file(self.available_screens[index].lower())
+        self.screens[index] = screen
+        return screen
+
+
+
+            def _update_clock(self, dt):
+        self.time = time()
 
 if __name__ == '__main__':
-    PongApp().run()
+    DomoticApp().run()
+
+
+
+
