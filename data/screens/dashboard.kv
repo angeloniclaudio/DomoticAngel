@@ -4,30 +4,56 @@ DomoticXScreen:
     GridLayout:
         rows: 2
         cols: 4
-        padding: [3,3,3,3]
-        row_default_height: (root.height-20)/2
-        spacing: 10
+        spacing: '8dp'
+        padding: '8dp'
 
         Button:
             size_hint_y: None
-            height: '48dp'
-            text: 'Button normal'
+            text: 'Lights'
+            Image:
+                source: 'data/icons/iconset/light.png'
+                y: self.parent.y + self.parent.height - 200
+                x: self.parent.x
+    Label:
+        text: "A label"
 
         Button:
             size_hint_y: None
-            height: '48dp'
-            text: 'Button down'
-            state: 'down'
+            text: 'Temperatures'
+            Image:
+                source: 'data/icons/iconset/temp.png'
+                y: self.parent.y + self.parent.height - 200
+                x: self.parent.x
 
         Button:
             size_hint_y: None
-            height: '48dp'
-            text: 'Button disabled'
-            disabled: True
+            text: 'Scenarios'
+            Image:
+                source: 'data/icons/iconset/scenes.png'
+                y: self.parent.y + self.parent.height - 200
+                x: self.parent.x
 
         Button:
             size_hint_y: None
-            height: '48dp'
-            text: 'Button down disabled'
-            state: 'down'
-            disabled: True
+            text: 'Time'
+            Image:
+                source: 'data/icons/iconset/circle.png'
+                y: self.parent.y + self.parent.height - 200
+                x: self.parent.x
+
+        Button:
+            size_hint_y: None
+            text: 'Weather'
+            Image:
+                source: 'data/icons/iconset/weather.png'
+                y: self.parent.y + self.parent.height - 200
+                x: self.parent.x
+
+        Button:
+            size_hint_y: None
+            text: 'Configuration'
+            Image:
+                source: 'data/icons/iconset/wrench.png'
+                y: self.parent.y + self.parent.height - 200
+                x: self.parent.x
+
