@@ -7,7 +7,6 @@ DomoticXScreen:
         spacing: '15dp'
         padding: '15dp'
         size_hint_y: None
-        size: self.parent.size
 
 
         Button:
@@ -18,6 +17,7 @@ DomoticXScreen:
                 Image:
                     source: 'data/icons/iconset/light.png'
                     size_hint_x: None
+                    height: self.parent.height
                 Label:
                     size_hint_x: None
                     text: "Lights"
