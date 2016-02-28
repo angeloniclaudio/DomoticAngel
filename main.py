@@ -36,16 +36,16 @@ from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen
 
 
-class ShowcaseScreen(Screen):
+class DomoticXScreen(Screen):
     fullscreen = BooleanProperty(False)
 
     def add_widget(self, *args):
         if 'content' in self.ids:
             return self.ids.content.add_widget(*args)
-        return super(ShowcaseScreen, self).add_widget(*args)
+        return super(DomoticXScreen, self).add_widget(*args)
 
 
-class ShowcaseApp(App):
+class DomoticXApp(App):
 
     index = NumericProperty(-1)
     current_title = StringProperty()
@@ -235,4 +235,4 @@ Button:
         self.time = time()
 
 if __name__ == '__main__':
-    ShowcaseApp().run()
+    DomoticXApp().run()

@@ -1,0 +1,3 @@
+title=DomoticX
+author=Claudio Angeloni
+orientation=landscape
