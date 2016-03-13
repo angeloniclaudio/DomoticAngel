@@ -4,7 +4,7 @@ Showcase of Kivy Features
 
 
 '''
-from builtins import super, sorted, len
+#from builtins import super, sorted, len
 from time import time
 from kivy.app import App
 from os.path import dirname, join
