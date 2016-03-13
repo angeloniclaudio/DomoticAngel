@@ -54,6 +54,7 @@ BoxLayout:
                 app_icon: 'data/icons/iconset/construction.png'
                 app_icon_height: 32
                 app_icon_width: 32
+                on_release: if sm.current_screen.name!='Dashboard': app.go_screen(app.screen_names.index('Dashboard'))
 
             ActionSpinner:
                 id: spnr
