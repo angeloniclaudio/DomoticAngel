@@ -9,16 +9,15 @@ config.read('config.ini')
 
 curdir = dirname(__file__)
 dmzurl = ConfigParser()
-dmzurl.read(curdir+'domoticzUrls.ini')
+dmzurl.read(curdir+'/'+'domoticzUrls.ini')
 
 
 # recupero elenco luci e prese
-def loadLights():
-    def response(req, results):
-        if results['status'] == 'OK':
-            #print(results['result'][2]['idx'])
-            return results['result']
-        else:
-            return []
+def obtainLights(callback):
+    req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + dmzurl.get('LIST', 'lights'), callback)
+    return req
 
-    req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + dmzurl.get('LIST', 'lights'), response)
+def toggleLight(idx, instance):
+    action = dmzurl.get('LIGHT', 'toggle').replace("$IDX", str(idx))
+    print('Status changed on the switch '+str(idx))
+    req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + action)

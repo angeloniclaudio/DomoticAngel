@@ -21,12 +21,6 @@ from kivy.config import ConfigParser
 from os.path import dirname
 from functools import partial
 
-# inizializzazione impostazioni
-config = ConfigParser()
-config.read('config.ini')
-
-dmzurl = ConfigParser()
-dmzurl.read('utility/dmzApiModule/domoticzUrls.ini')
 
 
 class DomoticXScreen(Screen):
@@ -91,8 +85,6 @@ class DomoticXApp(App):
         self.screens[index] = screen
         return screen
 
-    def retrive_lights(self):
-        dmzapi.loadLights()
 
     def populate_dashboard_page(self, layout):
         screens_dash = ['Lights', 'Scenarios', 'Temperatures','Weather']
@@ -112,32 +104,32 @@ class DomoticXApp(App):
 
 
 
-    def populate_light_page(self, layout):
-        def response(req, results):
+    def populate_light_page(self, layout,mode):
+
+        def serverRequest(*t):
+            req = dmzapi.obtainLights(serverResponse)
+            print('request sent')
+
+        def serverResponse(req, results):
             if results['status'] == 'OK':
+                layout.clear_widgets()
                 for elems in results['result']:
-                    #print(elems)
-                    add_button(elems['Name'],elems['idx'])
+                    add_button(elems)
 
-        def add_button(name,idx):
-
-            def callback(idx, instance):
-                action = dmzurl.get('LIGHT', 'toggle')
-                action = action.replace("$IDX", str(idx))
-                print(action)
-                req = UrlRequest(
-                        config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + action)
-
-
-            if not layout.get_parent_window():
-                return
-            btn = Button(text=name)
-            btn.bind(on_release=partial(callback, idx))
+        def add_button(switch):
+            colore=[1,1,1,1]
+            if switch['Status']=='On': colore=[0.45,1,1,1]
+            btn = Button(text=switch['Name'],background_color=colore)
+            btn.bind(on_release=partial(dmzapi.toggleLight, switch['idx']))
             layout.add_widget(btn)
 
-        req = UrlRequest(
-            config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + dmzurl.get('LIST', 'lights'),
-            response)
+        def compile():
+            layout.clear_widgets()
+            serverRequest()
+            Clock.schedule_interval(serverRequest,2)
+
+        if mode == 'first': compile()
+
 
 
 
