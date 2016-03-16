@@ -76,7 +76,9 @@ class DomoticXApp(App):
 
     def go_screen(self, idx):
         self.index = idx
-        self.root.ids.sm.switch_to(self.load_screen(idx), direction='left')
+        screen =self.load_screen(idx)
+        self.root.ids.sm.switch_to(screen, direction='left')
+        self.current_title = screen.name
 
     def load_screen(self, index):
         if index in self.screens:
@@ -104,11 +106,11 @@ class DomoticXApp(App):
 
 
 
-    def populate_light_page(self, layout,mode):
+    def populate_light_page(self, layout, mode):
 
-        def serverRequest(*t):
-            req = dmzapi.obtainLights(serverResponse)
-            print('request sent')
+        def serverRequest():
+                req = dmzapi.obtainLights(serverResponse)
+                print('request sent')
 
         def serverResponse(req, results):
             if results['status'] == 'OK':
@@ -126,7 +128,12 @@ class DomoticXApp(App):
         def compile():
             layout.clear_widgets()
             serverRequest()
-            Clock.schedule_interval(serverRequest,2)
+            Clock.schedule_interval(timedCheck,2)
+
+        def timedCheck(*t):
+            if (self.current_title == 'Lights'):
+                print(self.current_title )
+                serverRequest()
 
         if mode == 'first': compile()
 
