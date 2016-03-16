@@ -21,4 +21,3 @@ def toggleLight(idx, instance):
     action = dmzurl.get('LIGHT', 'toggle').replace("$IDX", str(idx))
     print('Status changed on the switch '+str(idx))
     req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + action)
-    app.populate_light_page()
