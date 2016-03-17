@@ -56,6 +56,11 @@ BoxLayout:
                 app_icon_width: 32
                 on_release: if sm.current_screen.name!='Dashboard': app.go_screen(app.screen_names.index('Dashboard'))
 
+            ActionButton:
+                text: 'Previous screen'
+                icon: 'data/icons/iconset/wrench.png'
+                on_release: app.open_settings()
+
             ActionSpinner:
                 id: spnr
                 important: True
@@ -84,3 +89,4 @@ BoxLayout:
             spnr.text = args[1].name
             idx = app.screen_names.index(args[1].name)
             if idx > -1: app.hierarchy.append(idx)
+

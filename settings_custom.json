@@ -1,0 +1,24 @@
+[
+    { "type": "title",
+      "title": "Connection" },
+
+    { "type": "string",
+      "title": "DomoticZ url",
+      "desc": "The URL or IP of the DomoticZ server",
+      "section": "CONNECTION",
+      "key": "url" },
+
+    { "type": "string",
+      "title": "DomoticZ username",
+      "desc": "The USERNAME of the DomoticZ server",
+      "section": "CONNECTION",
+      "key": "username" },
+
+    { "type": "string",
+      "title": "DomoticZ password",
+      "desc": "The PASSWORD of the DomoticZ server",
+      "section": "CONNECTION",
+      "key": "password" }
+
+
+]

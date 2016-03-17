@@ -5,7 +5,7 @@ from os.path import dirname
 
 #inizializzazione impostazioni
 config = ConfigParser()
-config.read('config.ini')
+config.read('domoticx.ini')
 
 curdir = dirname(__file__)
 dmzurl = ConfigParser()
@@ -14,10 +14,22 @@ dmzurl.read(curdir+'/'+'domoticzUrls.ini')
 
 # recupero elenco luci e prese
 def obtainLights(callback):
-    req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + dmzurl.get('LIST', 'lights'), callback)
-    return req
 
+    def serverResponse(req, results):
+        if results['status'] == 'OK':
+            callback(results['result'])
+
+    req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + dmzurl.get('LIST', 'lights'), serverResponse)
+
+
+
+
+# toggle light
 def toggleLight(idx, instance):
+
+    def serverResponse(req, results):
+            if results['status'] == 'OK':
+                print('Status changed on the switch '+str(idx))
+
     action = dmzurl.get('LIGHT', 'toggle').replace("$IDX", str(idx))
-    print('Status changed on the switch '+str(idx))
-    req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + action)
+    req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + action, serverResponse)

@@ -4,23 +4,19 @@ Showcase of Kivy Features
 
 
 '''
-#from builtins import super, sorted, len
 from time import time
 from kivy.app import App
-from os.path import dirname, join
+from os.path import join
 from kivy.lang import Builder
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty, \
-    ListProperty, Logger
+    ListProperty
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 import utility.dmzApiModule.domzapi as dmzapi
 from kivy.uix.button import Button
-
-from kivy.network.urlrequest import UrlRequest
-from kivy.config import ConfigParser
+from kivy.uix.vkeyboard import VKeyboard
 from os.path import dirname
 from functools import partial
-
 
 
 class DomoticXScreen(Screen):
@@ -38,8 +34,12 @@ class DomoticXApp(App):
     time = NumericProperty(0)
     screen_names = ListProperty([])
     hierarchy = ListProperty([])
+    use_kivy_settings = False
+
 
     def build(self):
+        config = self.config
+        config.set('KIVY', 'keyboard_mode', 'dock')
         self.title = 'hello world'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
@@ -50,6 +50,25 @@ class DomoticXApp(App):
         self.available_screens = [join(curdir, 'data', 'screens',
                                        '{}.kv'.format(fn)) for fn in self.available_screens]
         self.go_next_screen()
+        vk = VKeyboard(layout='qwerty')
+
+
+    def build_config(self, config):
+        config.setdefaults('CONNECTION', {
+            'url': 'http://',
+            'username': 'pi',
+            'password': 'root'
+        })
+
+    def build_settings(self, settings):
+        settings.add_json_panel('DomoticX settings', self.config, 'settings_custom.json')
+
+
+    def focused(self):
+        if self.password.focus == True:
+            self.vk.on_key_down(self)
+        elif self.username.focus == True:
+            self.vk.on_key_down(self)
 
     def on_pause(self):
         return True
@@ -89,7 +108,7 @@ class DomoticXApp(App):
 
 
     def populate_dashboard_page(self, layout):
-        screens_dash = ['Lights', 'Scenarios', 'Temperatures','Weather']
+        screens_dash = ['Lights', 'Scenarios', 'Temperatures']
 
         def callback(istance):
             self.go_screen(self.screen_names.index(istance.text))
@@ -109,21 +128,21 @@ class DomoticXApp(App):
     def populate_light_page(self, layout, mode):
 
         def serverRequest():
-                req = dmzapi.obtainLights(serverResponse)
+                req = dmzapi.obtainLights(serverResponseCallback)
                 print('request sent')
 
-        def serverResponse(req, results):
-            if results['status'] == 'OK':
+        def serverResponseCallback(results):
                 layout.clear_widgets()
-                for elems in results['result']:
+                for elems in results:
                     add_button(elems)
 
         def add_button(switch):
-            colore=[1,1,1,1]
-            if switch['Status']=='On': colore=[0.45,1,1,1]
-            btn = Button(text=switch['Name'],background_color=colore)
+            btn = Button(text=switch['Name'])
+            if switch['Status']=='On':
+                btn.background_normal = btn.background_down
             btn.bind(on_release=partial(dmzapi.toggleLight, switch['idx']))
             layout.add_widget(btn)
+
 
         def compile():
             layout.clear_widgets()
@@ -132,15 +151,9 @@ class DomoticXApp(App):
 
         def timedCheck(*t):
             if (self.current_title == 'Lights'):
-                print(self.current_title )
                 serverRequest()
 
         if mode == 'first': compile()
-
-
-
-
-
 
     def _update_clock(self, dt):
         self.time = time()
@@ -148,3 +161,4 @@ class DomoticXApp(App):
 
 if __name__ == '__main__':
     DomoticXApp().run()
+
