@@ -120,7 +120,7 @@ class DomoticXApp(App):
 
         def create_btn(texto):
             btn = ButtonAp()
-            btn.icon.source='data/icons/iconset/512/'+icons_dash[screens_dash.index(texto)]
+            btn.icon.source='data/icons/iconset/size_512/'+icons_dash[screens_dash.index(texto)]
             btn.label.text=texto
             btn.bind(on_release=callback)
             return btn
@@ -145,7 +145,7 @@ class DomoticXApp(App):
 
         def add_button(switch):
             btn = ButtonAp()
-            btn.icon.source='data/icons/iconset/512/light.png'
+            btn.icon.source='data/icons/iconset/size_512/light.png'
             btn.label.text=switch['Name']
             if switch['Status']=='On':
                 btn.background_normal = btn.background_down
