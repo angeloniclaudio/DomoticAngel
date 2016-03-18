@@ -18,10 +18,25 @@ from kivy.uix.vkeyboard import VKeyboard
 from os.path import dirname
 from functools import partial
 from kivy.properties import ObjectProperty
+import time as clock
+from kivy.uix.label import Label
+
+
+
+
+
+class IncrediblyCrudeClock(Label):
+    def update(self, *args):
+        self.text = clock.asctime()
+
+
+
 
 class ButtonAp(Button):
     label = ObjectProperty()
     icon = ObjectProperty()
+
+
 
 class DomoticXScreen(Screen):
     fullscreen = BooleanProperty(False)
@@ -39,6 +54,8 @@ class DomoticXApp(App):
     screen_names = ListProperty([])
     hierarchy = ListProperty([])
     use_kivy_settings = False
+    crudeclock = IncrediblyCrudeClock()
+    Clock.schedule_interval(crudeclock.update, 1)
 
 
     def build(self):
@@ -80,8 +97,8 @@ class DomoticXApp(App):
     def on_resume(self):
         pass
 
-    def on_current_title(self, instance, value):
-        self.root.ids.spnr.text = value
+    #def on_current_title(self, instance, value):
+     #   self.root.ids.spnr.text = value
 
     def go_previous_screen(self):
         self.index = (self.index - 1) % len(self.available_screens)
