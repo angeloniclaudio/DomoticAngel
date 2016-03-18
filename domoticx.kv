@@ -1,6 +1,26 @@
 #:kivy 1.8.0
 #:import Factory kivy.factory.Factory
 
+<ButtonAp@Button>:
+    label: textfield
+    icon: iconfield
+    BoxLayout:
+        orientation: "vertical"
+        pos: self.parent.pos
+        size: self.parent.size
+        padding: self.parent.height/10
+        spacing: self.parent.height/20
+        Image:
+            id: iconfield
+            source: 'data/icons/iconset/light.png'
+            size_hint_y: None
+            allow_stretch: True
+            height: self.parent.height/2*1
+        Label:
+            id: textfield
+            text: "The text"
+
+
 <ActionSpinnerOptions@SpinnerOption>
     background_color: .4, .4, .4, 1
 

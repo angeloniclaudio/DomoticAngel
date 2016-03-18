@@ -17,7 +17,11 @@ from kivy.uix.button import Button
 from kivy.uix.vkeyboard import VKeyboard
 from os.path import dirname
 from functools import partial
+from kivy.properties import ObjectProperty
 
+class ButtonAp(Button):
+    label = ObjectProperty()
+    icon = ObjectProperty()
 
 class DomoticXScreen(Screen):
     fullscreen = BooleanProperty(False)
@@ -109,12 +113,15 @@ class DomoticXApp(App):
 
     def populate_dashboard_page(self, layout):
         screens_dash = ['Lights', 'Scenarios', 'Temperatures']
+        icons_dash = ['light.png', 'scene.png', 'temp.png']
 
         def callback(istance):
-            self.go_screen(self.screen_names.index(istance.text))
+            self.go_screen(self.screen_names.index(istance.label.text))
 
         def create_btn(texto):
-            btn = Button(text=texto)
+            btn = ButtonAp()
+            btn.icon.source='data/icons/iconset/512/'+icons_dash[screens_dash.index(texto)]
+            btn.label.text=texto
             btn.bind(on_release=callback)
             return btn
 
@@ -137,7 +144,9 @@ class DomoticXApp(App):
                     add_button(elems)
 
         def add_button(switch):
-            btn = Button(text=switch['Name'])
+            btn = ButtonAp()
+            btn.icon.source='data/icons/iconset/512/light.png'
+            btn.label.text=switch['Name']
             if switch['Status']=='On':
                 btn.background_normal = btn.background_down
             btn.bind(on_release=partial(dmzapi.toggleLight, switch['idx']))
