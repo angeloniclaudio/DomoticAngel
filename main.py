@@ -20,7 +20,7 @@ from functools import partial
 from kivy.properties import ObjectProperty
 import time as clock
 from kivy.uix.label import Label
-
+from array import array
 
 
 
@@ -49,6 +49,7 @@ class DomoticXScreen(Screen):
 
 class DomoticXApp(App):
     index = NumericProperty(-1)
+    oldindex = ListProperty([])
     current_title = StringProperty()
     time = NumericProperty(0)
     screen_names = ListProperty([])
@@ -65,12 +66,12 @@ class DomoticXApp(App):
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
         self.available_screens = sorted([
-            'Dashboard', 'Lights', 'Temperatures', 'Scenarios'])
+            'Dashboard', 'Lights', 'Temperatures', 'Scenarios','Rooms'])
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
                                        '{}.kv'.format(fn)) for fn in self.available_screens]
-        self.go_next_screen()
+        self.go_screen(self.screen_names.index('Dashboard'))
         vk = VKeyboard(layout='qwerty')
 
 
@@ -100,21 +101,19 @@ class DomoticXApp(App):
     #def on_current_title(self, instance, value):
      #   self.root.ids.spnr.text = value
 
-    def go_previous_screen(self):
-        self.index = (self.index - 1) % len(self.available_screens)
-        screen = self.load_screen(self.index)
-        sm = self.root.ids.sm
-        sm.switch_to(screen, direction='right')
-        self.current_title = screen.name
+#-------------------------------------------- SCREEN MANAGER -----------------------------------------------------------------
 
-    def go_next_screen(self):
-        self.index = (self.index + 1) % len(self.available_screens)
-        screen = self.load_screen(self.index)
+    def go_previous_screen(self):
         sm = self.root.ids.sm
-        sm.switch_to(screen, direction='left')
-        self.current_title = screen.name
+        if self.index!=self.screen_names.index('Dashboard'):
+            #print(self.oldindex)
+            self.go_screen(self.oldindex.pop(-1))
+            self.oldindex.pop(-1)
+            #print(self.oldindex)
 
     def go_screen(self, idx):
+        self.oldindex.append(self.index)
+        #print(self.oldindex)
         self.index = idx
         screen =self.load_screen(idx)
         self.root.ids.sm.switch_to(screen, direction='left')
@@ -127,9 +126,10 @@ class DomoticXApp(App):
         self.screens[index] = screen
         return screen
 
+#-------------------------------------------- DASHBOARD -----------------------------------------------------------------
 
     def populate_dashboard_page(self, layout):
-        screens_dash = ['Lights', 'Scenarios', 'Temperatures']
+        screens_dash = ['Rooms', 'Scenarios', 'Temperatures']
         icons_dash = ['light.png', 'scene.png', 'temp.png']
 
         def callback(istance):
@@ -146,27 +146,98 @@ class DomoticXApp(App):
             layout.add_widget(create_btn(page))
 
 
+#-------------------------------------------- ROOMS -----------------------------------------------------------------
 
 
+    def populate_room_page(self, layout):
 
-    def populate_light_page(self, layout, mode):
+        def roomRequest():
+            def serverRoomCallback(results):
+                    layout.clear_widgets()
+                    for elems in results:
+                        add_room_button(elems)
+            req=dmzapi.obtainRooms(serverRoomCallback)
+
+
+        def add_room_button(room):
+            btnRoom = ButtonAp()
+            btnRoom.info=room
+            btnRoom.icon.source='data/icons/iconset/circle.png'
+            btnRoom.label.text=room['Name']
+            btnRoom.bind(on_release=partial(callback, room['idx']))
+            layout.add_widget(btnRoom)
+
+        def callback(roomidx, istance):
+            self.go_screen(self.screen_names.index('Lights'))
+            self.populate_light_page(roomidx)
+
+
+        roomRequest()
+
+
+#-------------------------------------------- LIGHT -----------------------------------------------------------------
+
+
+    def populate_light_page(self, roomidx):
+
+        def lightRequest(roomIdx):
+            def serverResponseCallback(results):
+                    for elems in results:
+                        layout.clear_widgets()
+                        dmzapi.obtainLightStatus(elems['devidx'], add_light_button)
+            req = dmzapi.obtainLightsPerRoom(roomIdx, serverResponseCallback)
+
+
+        def add_light_button(switch):
+            btn = ButtonAp()
+            btn.info = switch
+            btn.icon.source='data/icons/iconset/size_512/light.png'
+            btn.label.text=btn.info['Name']
+            if btn.info['Status']=='On':
+                btn.background_normal = btn.background_down
+            btn.bind(on_release=partial(dmzapi.toggleLight, btn.info['idx']))
+            layout.add_widget(btn)
+            Clock.schedule_interval(partial(timedCheck,btn), 2)
+
+
+        def update_status(switch):
+            def serverResponseCallback(results):
+                switch.info = results
+                if switch.info['Status']=='On':
+                    switch.background_normal = switch.background_down
+                else:
+                    switch.background_normal = 'atlas://data/images/defaulttheme/button'
+            req = dmzapi.obtainLightStatus(switch.info['idx'], serverResponseCallback)
+
+        def timedCheck(but,*t):
+            if (self.current_title == 'Lights'):
+                update_status(but)
+
+        layout=self.root.ids.sm.current_screen.layout
+        lightRequest(roomidx)
+
+
+#-------------------------------------------- SCENE -----------------------------------------------------------------
+
+    def populate_scene_page(self, layout, mode):
 
         def serverRequest():
-                req = dmzapi.obtainLights(serverResponseCallback)
-                print('request sent')
+                req = dmzapi.obtainScenes(serverResponseCallback)
+                #print('request sent')
 
         def serverResponseCallback(results):
                 layout.clear_widgets()
                 for elems in results:
                     add_button(elems)
 
-        def add_button(switch):
+        def add_button(scene):
             btn = ButtonAp()
-            btn.icon.source='data/icons/iconset/size_512/light.png'
-            btn.label.text=switch['Name']
-            if switch['Status']=='On':
+            btn.info = scene
+            btn.icon.source='data/icons/iconset/size_512/scene.png'
+            btn.label.text=scene['Name']
+            if scene['Status']=='On':
                 btn.background_normal = btn.background_down
-            btn.bind(on_release=partial(dmzapi.toggleLight, switch['idx']))
+            btn.bind(on_release=partial(dmzapi.activateScene, scene['idx']))
             layout.add_widget(btn)
 
 
@@ -176,10 +247,45 @@ class DomoticXApp(App):
             Clock.schedule_interval(timedCheck,2)
 
         def timedCheck(*t):
-            if (self.current_title == 'Lights'):
+            if (self.current_title == 'Scenes'):
                 serverRequest()
 
         if mode == 'first': compile()
+
+#-------------------------------------------- TEMPS -----------------------------------------------------------------
+
+    def populate_temp_page(self, layout, mode):
+
+        def serverRequest():
+                req = dmzapi.obtainTemps(serverResponseCallback)
+                #print('request sent')
+
+        def serverResponseCallback(results):
+                layout.clear_widgets()
+                for elems in results:
+                        if elems['Type']=='Temp + Humidity + Baro':
+                            add_temp_label(elems)
+
+        def add_temp_label(tempItem):
+           # print(tempItem)
+            lbl = Label()
+            lbl.text=tempItem['HardwareName']+' '+str(tempItem['Temp']) +' °C con index '+str(tempItem['idx'])
+            layout.add_widget(lbl)
+
+
+        def compile():
+            layout.clear_widgets()
+            serverRequest()
+            Clock.schedule_interval(timedCheck,2)
+
+        def timedCheck(*t):
+            if (self.current_title == 'Temperatures'):
+                serverRequest()
+
+        if mode == 'first': compile()
+
+
+#-------------------------------------------------------------------------------------------------------------
 
     def _update_clock(self, dt):
         self.time = time()
