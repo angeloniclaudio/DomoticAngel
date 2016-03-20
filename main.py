@@ -269,7 +269,7 @@ class DomoticXApp(App):
         def add_temp_label(tempItem):
            # print(tempItem)
             lbl = Label()
-           # lbl.text=tempItem['HardwareName']+' '+str(tempItem['Temp']) +' °C con index '+str(tempItem['idx'])
+           # lbl.text=tempItem['HardwareName']+' '+str(tempItem['Temp']) +' C con index '+str(tempItem['idx'])
             layout.add_widget(lbl)
 
 
