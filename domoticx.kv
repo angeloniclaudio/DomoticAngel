@@ -5,6 +5,16 @@
     label: textfield
     icon: iconfield
     info: None
+    #background_color: (0, 0, 0, 0)
+
+#    canvas.before:
+#        Color:
+#            rgb: .7, .7, .7
+#        Rectangle:
+#            size: self.size
+#            pos: self.pos
+#            source: 'data/background.png'
+
 
     BoxLayout:
         orientation: "vertical"
@@ -14,14 +24,16 @@
         spacing: self.parent.height/20
         Image:
             id: iconfield
-            source: 'data/icons/iconset/light.png'
+            #source: 'data/icons/iconset/light.png'
+            data: None
             size_hint_y: None
             allow_stretch: True
-            height: self.parent.height/2*1
+            height: self.parent.height/2.5*1
         Label:
             id: textfield
             text: 'testo'
             font_size: '20sp'
+
 
 
 <ActionSpinnerOptions@SpinnerOption>

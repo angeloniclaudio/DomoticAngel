@@ -67,7 +67,7 @@ def obtainScenes(callback):
     def serverResponse(req, results):
         if results['status'] == 'OK':
             callback(results['result'])
-
+    #print(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + dmzurl.get('LIST', 'scenes'))
     req = UrlRequest(config.get('CONNECTION', 'url') + ':' + config.get('CONNECTION', 'port') + dmzurl.get('LIST', 'scenes'), serverResponse)
 
 
