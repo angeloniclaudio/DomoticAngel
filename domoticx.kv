@@ -1,20 +1,10 @@
 #:kivy 1.8.0
 #:import Factory kivy.factory.Factory
 
+
 <ButtonAp@Button>:
     label: textfield
     icon: iconfield
-    info: None
-    #background_color: (0, 0, 0, 0)
-
-#    canvas.before:
-#        Color:
-#            rgb: .7, .7, .7
-#        Rectangle:
-#            size: self.size
-#            pos: self.pos
-#            source: 'data/background.png'
-
 
     BoxLayout:
         orientation: "vertical"
@@ -33,25 +23,10 @@
             id: textfield
             text: 'testo'
             font_size: '20sp'
+            font_name: 'data/font/fontFuture.otf'
 
 
 
-<ActionSpinnerOptions@SpinnerOption>
-    background_color: .4, .4, .4, 1
-
-<ActionSpinner@Spinner+ActionItem>
-    canvas.before:
-        Color:
-            rgba: 0.128, 0.128, 0.128, 1
-        Rectangle:
-            size: self.size
-            pos: self.pos
-    border: 27, 20, 12, 12
-    background_normal: 'atlas://data/images/defaulttheme/action_group'
-    option_cls: Factory.ActionSpinnerOptions
-
-<ActionDropdown>:
-    on_size: self.width = '220dp'
 
 <DomoticXScreen>:
     ScrollView:
@@ -69,6 +44,7 @@
                 height: self.height if root.fullscreen else self.minimum_height
 
 
+
 BoxLayout:
     orientation: 'vertical'
 
@@ -80,42 +56,41 @@ BoxLayout:
             source: 'data/background.png'
 
     ActionBar:
-
         ActionView:
             id: av
             use_separator: True
 
             ActionPrevious:
                 #with_previous: (False if sm.current_screen.name == 'button' else True) if sm.current_screen else False
-                title: 'DomoticX' + ('' if not app.current_title else ' - {}'.format(app.current_title)) + '    '+app.crudeclock.text
+                title: 'DomoticX' + ('' if not app.current_title else ' - {}'.format(app.current_title))
                 app_icon: 'data/icons/iconset/construction.png'
                 app_icon_height: 32
                 app_icon_width: 32
                 on_release: app.go_previous_screen()
-
-
-#            ActionSpinner:
-#                id: spnr
-#                important: True
-#                text: 'Jump to Screen'
-#                values: app.screen_names
-#                on_text:
-#                    if sm.current != args[1]:\
-#                    idx = app.screen_names.index(args[1]);\
-#                    app.go_screen(idx)
-
 
             ActionButton:
                 text: 'Settings'
                 icon: 'data/icons/iconset/wrench.png'
                 on_release: app.open_settings()
 
-
     ScreenManager:
         id: sm
         on_current_screen:
-#           spnr.text = args[1].name
             idx = app.screen_names.index(args[1].name)
             if idx > -1: app.hierarchy.append(idx)
+
+
+    BoxLayout:
+        id:bottom_bar
+        size_hint_y: None
+        height: self.parent.height/10
+        background: 1, 1, 1
+
+
+        Label:
+            text: app.crudeclock.text
+            font_size: '25sp'
+            font_name: 'data/font/fontFuture.otf'
+
 
 

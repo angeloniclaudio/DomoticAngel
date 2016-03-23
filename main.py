@@ -25,13 +25,14 @@ from kivy.uix.label import Label
 
 class IncrediblyCrudeClock(Label):
     def update(self, *args):
-        self.text = clock.asctime()
+        #self.text = clock.asctime()
+        self.text = clock.strftime("%A  -  %d/%m/%Y  -  %H:%M", clock.localtime())
 
 
 class ButtonAp(Button):
     label = ObjectProperty()
     icon = ObjectProperty()
-    #info = ListProperty()
+    info = ObjectProperty()
 
     def changeStatus(self):
         if self.info['Status'] == 'On':
@@ -67,7 +68,7 @@ class DomoticXApp(App):
     def build(self):
         config = self.config
         config.set('KIVY', 'keyboard_mode', 'dock')
-        self.title = 'hello world'
+        self.title = 'DomoticX'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
         self.available_screens = sorted([
