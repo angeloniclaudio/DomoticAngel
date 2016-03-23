@@ -25,7 +25,6 @@ from kivy.uix.label import Label
 
 class IncrediblyCrudeClock(Label):
     def update(self, *args):
-        #self.text = clock.asctime()
         self.text = clock.strftime("%A  -  %d/%m/%Y  -  %H:%M", clock.localtime())
 
 
@@ -104,7 +103,6 @@ class DomoticXApp(App):
     def on_resume(self):
         pass
 
-
 #-------------------------------------------- SCREEN MANAGER -----------------------------------------------------------------
 
     def go_previous_screen(self):
@@ -143,7 +141,7 @@ class DomoticXApp(App):
             btn = ButtonAp()
             btn.icon.source='data/icons/iconset/size_512/'+icons_dash[screens_dash.index(texto)]
             btn.label.text=texto
-            btn.bind(on_release=callback)
+            btn.bind(on_press=callback)
             return btn
 
         for page in screens_dash:
@@ -168,7 +166,7 @@ class DomoticXApp(App):
             btnRoom.info=room
             btnRoom.icon.source='data/icons/iconset/size_512/geometric.png'
             btnRoom.label.text=room['Name']
-            btnRoom.bind(on_release=partial(callback, room['idx']))
+            btnRoom.bind(on_press=partial(callback, room['idx']))
             layout.add_widget(btnRoom)
 
         def callback(roomidx, istance):
@@ -200,7 +198,7 @@ class DomoticXApp(App):
             btn.label.text=btn.info['Name']
             if btn.info['Status']=='On':
                 btn.changeStatus()
-            btn.bind(on_release=partial(dmzapi.toggleLight, btn.info['idx']))
+            btn.bind(on_press=partial(dmzapi.toggleLight, btn.info['idx']))
             layout.add_widget(btn)
             Clock.schedule_interval(partial(timedCheck,btn), 2)
 
@@ -242,7 +240,7 @@ class DomoticXApp(App):
             btn.label.text=scene['Name']
             if scene['Status']=='On':
                 btn.background_normal = btn.background_down
-            btn.bind(on_release=partial(dmzapi.activateScene, scene['idx']))
+            btn.bind(on_press=partial(dmzapi.activateScene, scene['idx']))
             layout.add_widget(btn)
 
 
