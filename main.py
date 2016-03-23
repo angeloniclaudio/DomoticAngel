@@ -117,8 +117,11 @@ class DomoticXApp(App):
         self.oldindex.append(self.index)
         self.index = idx
         screen =self.load_screen(idx)
-        self.root.ids.sm.switch_to(screen, direction='left')
-        self.current_title = screen.name
+        if self.root.ids.sm.current_screen != screen.name:
+            self.root.ids.sm.switch_to(screen, direction='left')
+            self.current_title = screen.name
+        else:
+            print('ERRORE SCREEN MANAGER')
 
     def load_screen(self, index):
         if index in self.screens:
